@@ -52,6 +52,8 @@ public class MainActivity extends Activity {
     private EditText messageField;
     private ImageView imageToSend;
     private Button sendButton;
+    private Button sendButton2;
+    private Button sendButton0;
     private RecyclerView log;
 
     private LogAdapter logAdapter;
@@ -104,6 +106,8 @@ public class MainActivity extends Activity {
         messageField = (EditText) findViewById(R.id.message);
         imageToSend = (ImageView) findViewById(R.id.image);
         sendButton = (Button) findViewById(R.id.send);
+        sendButton2 = (Button) findViewById(R.id.send2);
+        sendButton0 = (Button) findViewById(R.id.send0);
         log = (RecyclerView) findViewById(R.id.log);
     }
 
@@ -142,6 +146,17 @@ public class MainActivity extends Activity {
                 sendMessage();
             }
         });
+        sendButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage2();
+            }
+        });     sendButton0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage0();
+            }
+        });
 
         log.setHasFixedSize(false);
         log.setLayoutManager(new LinearLayoutManager(this));
@@ -170,16 +185,64 @@ public class MainActivity extends Activity {
     }
 
     private void toggleSendImage() {
-        if (imageToSend.isEnabled()) {
-            imageToSend.setEnabled(false);
+        if (imageToSend.getAlpha() == 1.0f) {
+//            imageToSend.setEnabled(false);
             imageToSend.setAlpha(0.3f);
         } else {
-            imageToSend.setEnabled(true);
+//            imageToSend.setEnabled(true);
             imageToSend.setAlpha(1.0f);
         }
     }
 
     public void sendMessage() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                com.klinker.android.send_message.Settings sendSettings = new com.klinker.android.send_message.Settings();
+                sendSettings.setSubscriptionId(0);
+                sendSettings.setMmsc(settings.getMmsc());
+                sendSettings.setProxy(settings.getMmsProxy());
+                sendSettings.setPort(settings.getMmsPort());
+                sendSettings.setUseSystemSending(true);
+
+                Transaction transaction = new Transaction(MainActivity.this, sendSettings);
+
+                Message message = new Message(messageField.getText().toString(), toField.getText().toString());
+
+                if (imageToSend.getAlpha() == 1.0f) {
+                    message.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.android));
+                }
+
+                transaction.sendNewMessage(message, Transaction.NO_THREAD_ID);
+            }
+        }).start();
+    }
+
+    public void sendMessage2() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                com.klinker.android.send_message.Settings sendSettings = new com.klinker.android.send_message.Settings();
+                sendSettings.setSubscriptionId(2);
+                sendSettings.setMmsc(settings.getMmsc());
+                sendSettings.setProxy(settings.getMmsProxy());
+                sendSettings.setPort(settings.getMmsPort());
+                sendSettings.setUseSystemSending(true);
+
+                Transaction transaction = new Transaction(MainActivity.this, sendSettings);
+
+                Message message = new Message(messageField.getText().toString(), toField.getText().toString());
+
+                if (imageToSend.getAlpha() == 1.0f) {
+                    message.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.android));
+                }
+
+                transaction.sendNewMessage(message, Transaction.NO_THREAD_ID);
+            }
+        }).start();
+    }
+
+    public void sendMessage0() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -193,7 +256,7 @@ public class MainActivity extends Activity {
 
                 Message message = new Message(messageField.getText().toString(), toField.getText().toString());
 
-                if (imageToSend.isEnabled()) {
+                if (imageToSend.getAlpha() == 1.0f) {
                     message.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.android));
                 }
 

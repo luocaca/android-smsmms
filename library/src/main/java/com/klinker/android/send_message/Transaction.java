@@ -29,6 +29,7 @@ import android.os.Parcelable;
 import android.provider.Telephony;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
+import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
 
 import com.android.mms.MmsConfig;
@@ -677,6 +678,9 @@ public class Transaction {
                 intent = explicitSentMmsReceiver;
             }
 
+            //SubscriptionManager.SLOT_KEY
+//            intent.putExtra("slot_id","0");
+//            intent.putExtra("slot_key","0");
             intent.putExtra(MmsSentReceiver.EXTRA_CONTENT_URI, messageUri.toString());
             intent.putExtra(MmsSentReceiver.EXTRA_FILE_PATH, mSendFile.getPath());
             final PendingIntent pendingIntent = PendingIntent.getBroadcast(
